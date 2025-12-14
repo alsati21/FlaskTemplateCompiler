@@ -3,26 +3,23 @@ from flask import Flask, render_template_string
 app = Flask(__name__)
 
 product = {
-    "name": "حاسوب محمول",
-    "price": 3500,
-    "category": "إلكترونيات",
-    "quantity": 5
+    "name": "Laptop",
+    "category": "Electronics",
+
 }
 
 html_template = """
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <title>عرض منتج</title>
+    <title>Product View</title>
 </head>
 <body>
-    <h2>عرض منتج</h2>
+    <h2>Product View</h2>
     <table border="1">
-        <tr><th>الاسم</th><td>{{ product.name }}</td></tr>
-        <tr><th>السعر</th><td>{{ product.price }}</td></tr>
-        <tr><th>الفئة</th><td>{{ product.category }}</td></tr>
-        <tr><th>الكمية</th><td>{{ product.quantity }}</td></tr>
+        <tr><th>Name</th><td>{{ product.name }}</td></tr>
+        <tr><th>Category</th><td>{{ product.category }}</td></tr>
     </table>
 </body>
 </html>
