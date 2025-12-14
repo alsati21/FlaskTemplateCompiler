@@ -6,27 +6,27 @@ products = []
 
 form_template = """
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <title>إضافة منتج</title>
+    <title>Add Product</title>
 </head>
 <body>
-    <h2>إضافة منتج جديد</h2>
+    <h2>Add New Product</h2>
     <form method="post">
-        <label>اسم المنتج:</label>
+        <label>Product Name:</label>
         <input type="text" name="name" required><br>
 
-        <label>السعر:</label>
+        <label>Price:</label>
         <input type="number" name="price" required><br>
 
-        <label>الفئة:</label>
+        <label>Category:</label>
         <input type="text" name="category" required><br>
 
-        <label>الكمية:</label>
+        <label>Quantity:</label>
         <input type="number" name="quantity" required><br>
 
-        <button type="submit">إضافة</button>
+        <button type="submit">Add</button>
     </form>
 </body>
 </html>
