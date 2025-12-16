@@ -5,32 +5,31 @@ options { tokenVocab=ProductLexer; }
 file
     : importStmt
       appInit
-      detailsBlock
+      (addBlock | detailsBlock)
       htmlTemplate
       routeDef
       runStmt
       EOF
     ;
 
-// --------------------
-// from flask import ...
-// --------------------
+// -------- import --------
 importStmt
-    : FROM FLASK IMPORT FLASK_KW COMMA RENDER_STR
+    : FROM FLASK IMPORT FLASK_KW COMMA RENDER_STR (COMMA REQUEST)?
     ;
 
-// --------------------
-// app = Flask(__name__)
-// --------------------
+// -------- app = Flask(__name__) --------
 appInit
     : APP EQ FLASK_KW LP DUUNDER_NAME RP
     ;
 
-// --------------------
-// product = { ... }
-// --------------------
+// -------- products = [] --------
+addBlock
+    : ID EQ LBRACK  detailsBlock  RBRACK
+    ;
+
+// -------- product = { ... } --------
 detailsBlock
-    : PRODUCT EQ LBRACE productFields RBRACE
+    :  (LBRACE productFields RBRACE )
     ;
 
 productFields
@@ -41,33 +40,48 @@ field
     : STRING COLON (STRING | NUMBER)
     ;
 
-// --------------------
-// html_template = """ ... """
-// --------------------
+// -------- html_template --------
 htmlTemplate
-    : HTML_TEMPLATE EQ TRIPLE_STRING
+    : ID  EQ TRIPLE_STRING
+
     ;
 
-// --------------------
-// @app.route("/")
-// def product_details():
-// --------------------
+// -------- @app.route --------
 routeDef
-    : AT APP DOT ID LP STRING RP
+    : AT APP DOT ID LP STRING (COMMA METHODS EQ LBRACK GET COMMA POST RBRACK)? RP
       DEF ID LP RP COLON
       routeBody
     ;
 
-// --------------------
-// return render_template_string(...)
-// --------------------
+// -------- body --------
 routeBody
-    : RETURN RENDER_STR LP HTML_TEMPLATE COMMA PRODUCT EQ PRODUCT RP
+    : formHandler
+    | RETURN RENDER_STR LP ID COMMA ID EQ ID RP
+    | RETURN RENDER_STR LP ID RP
+    | RETURN RENDER_STR LP ID RP
     ;
 
-// --------------------
-// app.run(debug=True)
-// --------------------
+// -------- if POST --------
+formHandler
+    : IF REQUEST DOT METHOD EQEQ POST COLON
+      ID EQ LBRACE formFields RBRACE
+      ID DOT ID LP ID RP
+      RETURN RENDER_STR LP ID RP
+    ;
+
+// -------- form fields --------
+formFields
+    : formField (COMMA formField)*
+    ;
+
+formField
+    : STRING COLON
+      ( REQUEST DOT FORM LBRACK STRING RBRACK
+      | INT LP REQUEST DOT FORM LBRACK STRING RBRACK RP
+      )
+    ;
+
+// -------- run --------
 runStmt
     : RUN LP DEBUG RP
     ;

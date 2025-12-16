@@ -3,35 +3,84 @@ from flask import Flask, render_template_string
 app = Flask(__name__)
 
 product = {
-    "name": "Laptop",
+    "name": "حاسوب محمول",
     "price": 3500,
-    "category": "Electronics",
+    "category": "إلكترونيات",
     "quantity": 5,
-    "description": "Laptop with i7 processor, 16GB RAM, and 15.6-inch display."
+    "description": "حاسوب محمول بمعالج i7 وذاكرة 16GB RAM وشاشة 15.6 بوصة",
+    "image": "https://via.placeholder.com/300"
 }
 
 html_template = """
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Product Details</title>
+    <title>تفاصيل المنتج</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            width: 60%;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 30px;
+        }
+
+        .image-box img {
+            width: 300px;
+            border-radius: 8px;
+        }
+
+        .details h2 {
+            margin-top: 0;
+        }
+
+        .details p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .price {
+            color: #28a745;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
+
 <body>
-    <h2>Product Details</h2>
-    <ul>
-        <li><strong>Name:</strong> {{ product.name }}</li>
-        <li><strong>Price:</strong> {{ product.price }}</li>
-        <li><strong>Category:</strong> {{ product.category }}</li>
-        <li><strong>Quantity:</strong> {{ product.quantity }}</li>
-        <li><strong>Description:</strong> {{ product.description }}</li>
-    </ul>
+    <div class="container">
+
+        <div class="image-box">
+            <img src="{{ product.image }}" alt="Product Image">
+        </div>
+
+        <div class="details">
+            <h2>{{ product.name }}</h2>
+            <p class="price">السعر: {{ product.price }} $</p>
+            <p><strong>الفئة:</strong> {{ product.category }}</p>
+            <p><strong>الكمية المتوفرة:</strong> {{ product.quantity }}</p>
+            <p><strong>الوصف:</strong> {{ product.description }}</p>
+        </div>
+
+    </div>
 </body>
 </html>
 """
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def product_details():
     return render_template_string(html_template, product=product)
 
-app.run(debug=True)
+
+if __name__ == "__main__":
+    app.run(debug=True)

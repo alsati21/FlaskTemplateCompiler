@@ -1,40 +1,32 @@
 lexer grammar ProductLexer;
 
-// ====================
-// كلمات Flask / Python
-// ====================
+// -------- Keywords --------
 FROM        : 'from';
 IMPORT      : 'import';
 FLASK       : 'flask';
 FLASK_KW    : 'Flask';
 RENDER_STR  : 'render_template_string';
+REQUEST     : 'request';
 APP         : 'app';
 DEF         : 'def';
 RETURN      : 'return';
 RUN         : 'app.run';
 DEBUG       : 'debug=True';
 
-// ====================
-// كلمات تحكم
-// ====================
-IF      : 'if';
-REQUEST : 'request';
-METHOD  : 'method';
-FORM    : 'form';
-INT     : 'int';
+IF          : 'if';
+METHOD      : 'method';
+FORM        : 'form';
+INT         : 'int';
+METHODS     : 'methods';
 
-// ====================
-// أسماء متغيرات
-// ====================
-PRODUCTS        : 'products';
-PRODUCT         : 'product';
-HTML_TEMPLATE   : 'html_template';
-NEW_PRODUCT     : 'new_product';
-PRODUCTS_APPEND : 'products.append';
+// -------- HTTP --------
+GET         : '"GET"';
+POST        : '"POST"';
 
-// ====================
-// رموز
-// ====================
+// -------- Names --------
+
+
+// -------- Symbols --------
 AT      : '@';
 EQEQ    : '==';
 EQ      : '=';
@@ -48,20 +40,15 @@ COLON   : ':';
 COMMA   : ',';
 DOT     : '.';
 
-// ====================
-// قيم
-// ====================
-STRING  : '"' (~["\r\n])* '"';
-NUMBER  : [0-9]+;
+// -------- Types --------
+STRING        : '"' (~["\r\n])* '"';
+NUMBER        : [0-9]+;
 TRIPLE_STRING : '"""' .*? '"""';
 
-// ====================
-// معرفات
-// ====================
+// -------- Identifiers --------
 DUUNDER_NAME : '__name__';
 ID           : [a-zA-Z_][a-zA-Z0-9_]*;
 
-// ====================
-// تجاهل الفراغات
-// ====================
+
+// -------- Skip --------
 WS : [ \t\r\n]+ -> skip;
