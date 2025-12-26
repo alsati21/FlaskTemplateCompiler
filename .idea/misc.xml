@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ANTLRGenerationPreferences">
     <option name="perGrammarGenerationSettings">
@@ -6,7 +7,7 @@
           <option name="fileName" value="$PROJECT_DIR$/src/antlr/ProductParser.g4" />
           <option name="autoGen" value="true" />
           <option name="outputDir" value="C:\Users\ASUS\IdeaProjects\FlaskTemplateCompiler\src" />
-          <option name="libDir" value="" />
+          <option name="libDir" value="C:\Users\Yousef\IdeaProjects\project structur\src\antlr" />
           <option name="encoding" value="" />
           <option name="pkg" value="" />
           <option name="language" value="" />
