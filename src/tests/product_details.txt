@@ -1,13 +1,22 @@
 from flask import Flask, render_template_string
 
 app = Flask(__name__)
-
+// this file for show details product
 product = {
+<<<<<<< Updated upstream
     "name": "حاسوب محمول",
     "price": 3500,
     "category": "إلكترونيات",
     "quantity": 5,
     "description": "حاسوب محمول بمعالج i7 وذاكرة 16GB وشاشة 15.6 بوصة."
+=======
+           "name": "Laptop",
+           "price": 3500,
+           "category": "sdgasdgasd",
+           "quantity": 5,
+    "description":"Powerful gaming laptop",
+    "image": "https://via.placeholder.com/300"
+>>>>>>> Stashed changes
 }
 
 html_template = """
@@ -15,9 +24,52 @@ html_template = """
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+<<<<<<< Updated upstream
     <title>تفاصيل المنتج</title>
+=======
+    <title> Details of Product</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            width: 60%;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 30px;
+        }
+
+        .image-box img {
+            width: 300px;
+            border-radius: 8px;
+        }
+
+        .details h2 {
+            margin-top: 0;
+        }
+
+        .details p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .price {
+            color: #28a745;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+>>>>>>> Stashed changes
 </head>
 <body>
+<<<<<<< Updated upstream
     <h2>تفاصيل المنتج</h2>
     <ul>
         <li><strong>الاسم:</strong> {{ product.name }}</li>
@@ -26,6 +78,23 @@ html_template = """
         <li><strong>الكمية:</strong> {{ product.quantity }}</li>
         <li><strong>الوصف:</strong> {{ product.description }}</li>
     </ul>
+=======
+    <div class="container">
+
+        <div class="image-box">
+            <img src="{{ product.image }}" alt="Product Image">
+        </div>
+
+        <div class="details">
+            <h2>{{ product.name }}</h2>
+            <p class="price">Price: {{ product.price }} $</p>
+            <p><strong>Category:</strong> {{ product.category }}</p>
+            <p><strong> Quantity:</strong> {{ product.quantity }}</p>
+            <p><strong>Description:</strong> {{ product.description }}</p>
+        </div>
+
+    </div>
+>>>>>>> Stashed changes
 </body>
 </html>
 """
