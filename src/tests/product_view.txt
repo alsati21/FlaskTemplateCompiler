@@ -1,26 +1,27 @@
 from flask import Flask, render_template_string
 
 app = Flask(__name__)
+// this file for show product
 
 products = [
     {
-        "name": "حاسوب محمول",
+        "name": "Laptop",
         "price": 3500,
-        "category": "إلكترونيات",
+        "category": "sdgasdgasd",
         "quantity": 5,
         "image": "https://via.placeholder.com/250"
     },
     {
-        "name": "هاتف ذكي",
+        "name": "Phone",
         "price": 1800,
-        "category": "إلكترونيات",
+        "category": "asdgasdgas",
         "quantity": 10,
         "image": "https://via.placeholder.com/250"
     },
     {
-        "name": "سماعات رأس",
+        "name": "Keyboard",
         "price": 300,
-        "category": "إكسسوارات",
+        "category": "asdgasdgas",
         "quantity": 20,
         "image": "https://via.placeholder.com/250"
     }
@@ -31,7 +32,7 @@ html_template = """
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>عرض المنتجات</title>
+    <title>show products</title>
 
     <style>
         body {
@@ -79,17 +80,17 @@ html_template = """
 
 <body>
     <div class="container">
-        <h2>قائمة المنتجات</h2>
+        <h2> list of product</h2>
 
         {% for product in products %}
         <div class="product-card">
             <img src="{{ product.image }}" width="200">
 
             <div class="details">
-                <p><span class="label">الاسم:</span> {{ product.name }}</p>
-                <p><span class="label">السعر:</span> {{ product.price }} ل.س</p>
-                <p><span class="label">الفئة:</span> {{ product.category }}</p>
-                <p><span class="label">الكمية:</span> {{ product.quantity }}</p>
+                <p><span class="label">Name:</span> {{ product.name }}</p>
+                <p><span class="label">Price:</span> {{ product.price }}$</p>
+                <p><span class="label">Category:</span> {{ product.category }}</p>
+                <p><span class="label">Quantity:</span> {{ product.quantity }}</p>
             </div>
         </div>
         {% endfor %}

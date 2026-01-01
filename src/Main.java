@@ -1,17 +1,31 @@
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import AST.*;
+import antlr.*;
+import org.antlr.v4.runtime.*;
+import visitior.ASTBuilder;
+import symbol_table.SymbolTable;
+
+import static org.antlr.v4.runtime.CharStreams.fromFileName;
+
 public class Main {
-    public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+    public static void main(String[] args) throws Exception {
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+        String code = "src/tests/product_details.txt";
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }
+        CharStream input = fromFileName(code);
+        ProductLexer lexer = new ProductLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        ProductParser parser = new ProductParser(tokens);
+
+        ASTBuilder builder = new ASTBuilder();
+        ASTNode ast = builder.visit(parser.start());
+
+        System.out.println("=== AST ===");
+        ast.print("");
+
+        // طباعة محتويات الـ Symbol Table بعد بناء AST
+        SymbolTable globalScope = builder.getGlobalScope();
+        System.out.println("\n=== Symbol Table (Global Scope) ===");
+        globalScope.print("");
+        System.out.println("=== End of Symbol Table ===\n");
     }
 }

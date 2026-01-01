@@ -1,13 +1,13 @@
 from flask import Flask, render_template_string
 
 app = Flask(__name__)
-
+// this file for show details product
 product = {
-    "name": "حاسوب محمول",
-    "price": 3500,
-    "category": "إلكترونيات",
-    "quantity": 5,
-    "description": "حاسوب محمول بمعالج i7 وذاكرة 16GB RAM وشاشة 15.6 بوصة",
+           "name": "Laptop",
+           "price": 3500,
+           "category": "sdgasdgasd",
+           "quantity": 5,
+    "description":"Powerful gaming laptop",
     "image": "https://via.placeholder.com/300"
 }
 
@@ -16,7 +16,7 @@ html_template = """
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>تفاصيل المنتج</title>
+    <title> Details of Product</title>
 
     <style>
         body {
@@ -66,10 +66,10 @@ html_template = """
 
         <div class="details">
             <h2>{{ product.name }}</h2>
-            <p class="price">السعر: {{ product.price }} $</p>
-            <p><strong>الفئة:</strong> {{ product.category }}</p>
-            <p><strong>الكمية المتوفرة:</strong> {{ product.quantity }}</p>
-            <p><strong>الوصف:</strong> {{ product.description }}</p>
+            <p class="price">Price: {{ product.price }} $</p>
+            <p><strong>Category:</strong> {{ product.category }}</p>
+            <p><strong> Quantity:</strong> {{ product.quantity }}</p>
+            <p><strong>Description:</strong> {{ product.description }}</p>
         </div>
 
     </div>
