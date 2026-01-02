@@ -3,12 +3,20 @@ from flask import Flask, render_template_string
 app = Flask(__name__)
 // this file for show details product
 product = {
+<<<<<<< Updated upstream
+    "name": "حاسوب محمول",
+    "price": 3500,
+    "category": "إلكترونيات",
+    "quantity": 5,
+    "description": "حاسوب محمول بمعالج i7 وذاكرة 16GB وشاشة 15.6 بوصة."
+=======
            "name": "Laptop",
            "price": 3500,
            "category": "sdgasdgasd",
            "quantity": 5,
     "description":"Powerful gaming laptop",
     "image": "https://via.placeholder.com/300"
+>>>>>>> Stashed changes
 }
 
 html_template = """
@@ -16,6 +24,9 @@ html_template = """
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+<<<<<<< Updated upstream
+    <title>تفاصيل المنتج</title>
+=======
     <title> Details of Product</title>
 
     <style>
@@ -55,9 +66,19 @@ html_template = """
             font-weight: bold;
         }
     </style>
+>>>>>>> Stashed changes
 </head>
-
 <body>
+<<<<<<< Updated upstream
+    <h2>تفاصيل المنتج</h2>
+    <ul>
+        <li><strong>الاسم:</strong> {{ product.name }}</li>
+        <li><strong>السعر:</strong> {{ product.price }}</li>
+        <li><strong>الفئة:</strong> {{ product.category }}</li>
+        <li><strong>الكمية:</strong> {{ product.quantity }}</li>
+        <li><strong>الوصف:</strong> {{ product.description }}</li>
+    </ul>
+=======
     <div class="container">
 
         <div class="image-box">
@@ -73,14 +94,13 @@ html_template = """
         </div>
 
     </div>
+>>>>>>> Stashed changes
 </body>
 </html>
 """
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
 def product_details():
     return render_template_string(html_template, product=product)
 
-
-if __name__ == "__main__":
-    app.run(debug=True)
+app.run(debug=True)
