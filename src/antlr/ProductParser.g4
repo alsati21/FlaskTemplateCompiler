@@ -2,18 +2,20 @@ parser grammar ProductParser;
 
 options { tokenVocab=ProductLexer; }
 
+/* ---------- Start ---------- */
 start
     : file EOF
     ;
 
+/* ---------- File ---------- */
 file
     : importStmt+ appInit dataBlock* htmlTemplate? routeDef* runStmt?
     ;
 
 /* ---------- Imports ---------- */
 importStmt
-    : FROM FLASK IMPORT importItems
-    | IMPORT importJsItems
+    : FROM FLASK IMPORT importItems     #flaskImport
+    | IMPORT importJsItems              #jsImport
     ;
 
 importItems
@@ -21,35 +23,38 @@ importItems
     ;
 
 importItem
-    : FLASK_KW
-    | RENDER_STR
-    | RENDER_TMP
-    | REQUEST
-    | ID
+    : FLASK_KW        #importFlask
+    | RENDER_STR     #importRenderStr
+    | RENDER_TMP     #importRenderTmp
+    | REQUEST        #importRequest
+    | ID             #importId
     ;
 
 importJsItems
-    : IDENTIFIER (COMMA LBRACE IDENTIFIER RBRACE FROM STRING)?
+    : ID (COMMA LBRACE ID RBRACE FROM STRING)? #jsImportItems
     ;
 
 /* ---------- App Initialization ---------- */
 appInit
-    : APP EQ FLASK_KW LP DUUNDER_NAME RP
+    : APP EQ FLASK_KW LP DUUNDER_NAME RP #appInitialization
     ;
 
 /* ---------- Data Blocks ---------- */
 dataBlock
-    : addBlock
-    | dictAssign
+    : addBlock                          #addDataBlock
+    | dictAssign                       #dictDataBlock
+    | ID EQ literal SEMICOLON          #simpleAssignBlock
+    | ID EQ LBRACE productFields RBRACE        #namedDict
+
     ;
 
 addBlock
-    : ID EQ LBRACK (dictAssign (COMMA dictAssign)*)? RBRACK
+    : ID EQ LBRACK (dictAssign (COMMA dictAssign)*)? RBRACK #listAddBlock
     ;
 
 dictAssign
-    : LBRACE productFields RBRACE
-    | ID EQ LBRACE productFields RBRACE
+    : LBRACE productFields RBRACE              #anonymousDict
+    | ID                                        #name
     ;
 
 productFields
@@ -57,213 +62,231 @@ productFields
     ;
 
 field
-    : STRING COLON expr
+    : STRING COLON expr                #fieldAssign
     ;
 
-/* ---------- HTML Template كسلسلة فقط ---------- */
-    singleTag : OPENTAG (FORM|ID) ((METHOD|ID) EQ STRING)* (ID)* CLOSETAG;
-    closeSingleTag : OPENTAG DIV (FORM|ID) CLOSETAG;
-     id_id: (ID MINUS ID)|ID;
-     //idHand:ID HANDRED;
-    bodyCSS : DOT? (id_id COLON)? (id_id)+ LBRACE( id_id COLON ( (ID|NUMBER|HANDRED|HASH|LP|RP|FLOAT_NUM|COMMA)* ( COMMA id_id)?)  SEMICOLON)* RBRACE;
-jinjatemplete :
-LBRACE LBRACE ID(DOT ID)* RBRACE RBRACE
-;
-elseElif : LBRACE HANDRED (ELIF|ELSE) (ID|IN)*  HANDRED  RBRACE;
+/* ---------- HTML / Template ---------- */
+singleTag
+    : OPENTAG (FORM|ID) ((METHOD|ID) EQ STRING)* (ID)* CLOSETAG #singleHtmlTag
+    ;
 
-if_statment :LBRACE HANDRED (IF) (ID|IN)*  HANDRED  RBRACE  (htmlTag | elseElif|fortemplete)*   LBRACE HANDRED (ENDIF)  HANDRED  RBRACE ;
+closeSingleTag
+    : OPENTAG DIV (FORM|ID) CLOSETAG #closeHtmlTag
+    ;
 
-htmlTag :
-  singleTag+
+id_id
+    : ID MINUS ID   #rangeId
+    | ID            #singleId
+    ;
 
-  |(singleTag  ((
-  STRING
-  |ID
-  |COLON
-  |EQ
-  |SDOLAR
-  |fortemplete
-  |if_statment
-  |jinjatemplete
-    |bodyCSS
+bodyCSS
+    : DOT? (id_id COLON)? (id_id)+
+      LBRACE
+        ( id_id COLON ((ID|NUMBER|HANDRED|HASH|LP|RP|FLOAT_NUM|COMMA)* (COMMA id_id)?) SEMICOLON )*
+      RBRACE
+      #cssBody
+    ;
 
-  )*  closeSingleTag)*)
- ;
+jinjatemplete
+    : LBRACE LBRACE ID (DOT ID)* RBRACE RBRACE #jinjaExpression
+    ;
 
-fortemplete :
-  LBRACE HANDRED (FOR) (ID|IN)*  HANDRED  RBRACE (htmlTag|singleTag)* LBRACE HANDRED (ENDFOR) (ID|IN)*  HANDRED  RBRACE
-  ;
+elseElif
+    : LBRACE HANDRED (ELIF|ELSE) (ID|IN)* HANDRED RBRACE #elseElifBlock
+    ;
 
-valueHtmlL :
-(
- DOCTYPE
-  |htmlTag
+if_statment
+    : LBRACE HANDRED IF (ID|IN)* HANDRED RBRACE
+      (htmlTag | elseElif | fortemplete)*
+      LBRACE HANDRED ENDIF HANDRED RBRACE
+      #ifStatement
+    ;
 
- )*
-;
+htmlTag
+    : singleTag+                                                  #simpleHtml
+    | (singleTag ((STRING|ID|COLON|EQ|SDOLAR|fortemplete
+                  |if_statment|jinjatemplete|bodyCSS)* closeSingleTag)*)
+                  #complexHtml
+    ;
+
+fortemplete
+    : LBRACE HANDRED FOR (ID|IN)* HANDRED RBRACE
+      (htmlTag|singleTag)*
+      LBRACE HANDRED ENDFOR (ID|IN)* HANDRED RBRACE
+      #forTemplate
+    ;
+
+valueHtmlL
+    : (DOCTYPE | htmlTag)* #htmlValueList
+    ;
 
 htmlTemplate
-    : ID EQ TRIPLE_STRING valueHtmlL TRIPLE_STRING
+    : ID EQ TRIPLE_STRING valueHtmlL TRIPLE_STRING #htmlTemplateAssign
     ;
 
-
-
-/* ---------- Route Definition ---------- */
+/* ---------- Routes ---------- */
 routeDef
-    : AT APP DOT ROUTE LP STRING (COMMA METHODS EQ LBRACK STRING (COMMA STRING)* RBRACK)? RP
+    : AT APP DOT ROUTE LP STRING
+      (COMMA METHODS EQ LBRACK STRING (COMMA STRING)* RBRACK)?
+      RP
       DEF ID LP paramList? RP COLON routeBody+
+       #routeDefinition
     ;
 
 paramList
-    : ID (COMMA ID)*
+    : ID (COMMA ID)* #parameterList
     ;
 
 routeBody
-    : (statement | formHandler | returnStmt)+
+    : (statement | formHandler | returnStmt)+ #routeBodyBlock
     ;
 
 returnStmt
-    : RETURN (RENDER_STR | RENDER_TMP) LP expr (COMMA ID EQ expr)* RP
+    : RETURN (RENDER_STR | RENDER_TMP)
+      LP expr (COMMA ID EQ expr)* RP
+      #returnStatement
     ;
 
 formHandler
-    : IF requestMethodIsPost COLON statement+ returnStmt
+    : IF requestMethodIsPost COLON statement+ returnStmt #formHandlerBlock
     ;
 
 requestMethodIsPost
-    : REQUEST DOT METHOD EQEQ STRING
+    : REQUEST DOT METHOD EQEQ STRING #postMethodCheck
     ;
 
+/* ---------- Statements ---------- */
 statement
-    : target EQ expr
-    | expr
+    : target EQ expr     #assignmentStatement
+    | expr               #expressionStatement
     ;
 
 target
-    : ID
-    | ID LBRACK COLON RBRACK
-    | ID LBRACK expr RBRACK
+    : ID                       #simpleTarget
+    | ID LBRACK COLON RBRACK   #sliceTarget
+    | ID LBRACK expr RBRACK    #indexTarget
     ;
 
 /* ---------- Expressions ---------- */
 expr
-    : literal
-    | (ID | REQUEST | INT | IDENTIFIER) (suffix)*
-    | dictLiteral
-    | listLiteral
-    | listComprehension
-    | jsInstruction
+    : literal                             #literalExpr
+    | (ID | REQUEST | INT | ID) suffix* #accessExpr
+    | dictLiteral                         #dictExpr
+    | listLiteral                         #listExpr
+    | listComprehension                   #listCompExpr
+    | jsInstruction                       #jsExpr
     ;
 
 literal
-    : STRING
-    | STRING_LITERAL
-    | NUMBER
-    | FLOAT_NUM
-    | DECIMAL_INTEGER_LITERAL
-    | FLOAT_LITERAL
-    | TRUE
-    | FALSE
-    | NULL
+    : STRING                     #stringLiteral
+    | STRING_LITERAL             #stringLiteral2
+    | NUMBER                     #numberLiteral
+    | FLOAT_NUM                  #floatLiteral
+    | DECIMAL_INTEGER_LITERAL    #decimalLiteral
+    | TRUE                       #trueLiteral
+    | FALSE                      #falseLiteral
+    | NULL                       #nullLiteral
     ;
 
 suffix
-    : DOT (ID | REQUEST | FORM | METHOD | IDENTIFIER)
-    | LBRACK (STRING | NUMBER) RBRACK
-    | LP (expr (COMMA expr)*)? RP
+    : DOT (ID | REQUEST | FORM | METHOD | ID)  #dotSuffix
+    | LBRACK (STRING | NUMBER) RBRACK                  #indexSuffix
+    | LP (expr (COMMA expr)*)? RP                      #callSuffix
     ;
 
 dictLiteral
-    : LBRACE productFields RBRACE
+    : LBRACE productFields RBRACE #dictLiteralExpr
     ;
 
 listLiteral
-    : LBRACK exprList? RBRACK
+    : LBRACK exprList? RBRACK #listLiteralExpr
     ;
 
 exprList
-    : expr (COMMA expr)*
+    : expr (COMMA expr)* #expressionList
     ;
 
-/* ---------- List comprehension ---------- */
+/* ---------- List Comprehension ---------- */
 listComprehension
-    : LBRACK compFor RBRACK
+    : LBRACK compFor RBRACK #listComprehensionExpr
     ;
 
 compFor
-    : expr FOR ID IN ID (IF compCond)?
+    : expr FOR ID IN ID (IF compCond)? #comprehensionFor
     ;
 
 compCond
-    : leftOperand comparator rightOperand
+    : leftOperand comparator rightOperand #comprehensionCondition
     ;
 
 leftOperand
-    : ID
-    | ID LBRACK STRING RBRACK
-    | (ID | REQUEST | INT) (suffix)+
+    : ID                                   #leftId
+    | ID LBRACK STRING RBRACK              #leftIndex
+    | (ID | REQUEST | INT) (suffix)+       #leftAccess
     ;
 
 rightOperand
-    : expr
+    : expr #rightExpr
     ;
 
 comparator
-    : EQEQ
-    | NEQ
+    : EQEQ #equalsComparator
+    | NEQ  #notEqualsComparator
     ;
 
-/* ---------- Run Statement ---------- */
+/* ---------- Run ---------- */
 runStmt
-    : APP DOT RUNKW LP runArgs? RP
-    | IF mainCheck COLON APP DOT RUNKW LP runArgs? RP
+    : APP DOT RUNKW LP runArgs? RP                     #directRun
+    | IF mainCheck COLON APP DOT RUNKW LP runArgs? RP  #guardedRun
     ;
 
 mainCheck
-    : DUUNDER_NAME EQEQ STRING
+    : DUUNDER_NAME EQEQ STRING #mainCheckExpr
     ;
 
 runArgs
-    : arg (COMMA arg)*
+    : arg (COMMA arg)* #runArguments
     ;
 
 arg
-    : ID EQ expr
+    : ID EQ expr #runArgument
     ;
 
 /* ---------- JS / JSX ---------- */
 jsInstruction
-    : function_declaration
-    | function_call
-    | variabe
-    | return_js
+    : function_declaration   #jsFunctionDeclaration
+    | function_call          #jsFunctionCall
+    | variabe                #jsVariable
+    | return_js              #jsReturn
     ;
 
 function_declaration
-    : FUNCTION IDENTIFIER function_body
+    : FUNCTION ID function_body #functionDeclaration
     ;
 
 function_body
-    : LP (IDENTIFIER (COMMA IDENTIFIER)*)? RP
-      ( ARROW LBRACE (instruction_js)* RBRACE
-      | LBRACE (instruction_js)* RBRACE )
+    : LP (ID (COMMA ID)*)? RP
+      ARROW LBRACE instruction_js* RBRACE   #arrowFunction
+    | LP (ID (COMMA ID)*)? RP
+      LBRACE instruction_js* RBRACE         #normalFunction
     ;
 
 instruction_js
-    : function_call SEMICOLON?
-    | variabe SEMICOLON?
-    | return_js SEMICOLON?
-    | expr SEMICOLON?
+    : function_call SEMICOLON? #jsCallInstruction
+    | variabe SEMICOLON?       #jsVarInstruction
+    | return_js SEMICOLON?     #jsReturnInstruction
+    | expr SEMICOLON?          #jsExprInstruction
     ;
 
 return_js
-    : RETURN expr
+    : RETURN expr #returnJs
     ;
 
 function_call
-    : IDENTIFIER LP (expr (COMMA expr)*)? RP
+    : ID LP (expr (COMMA expr)*)? RP #functionCall
     ;
 
 variabe
-    : (CONST | LET | VAR)? (IDENTIFIER) (EQ expr)?
+    : (CONST | LET | VAR)? ID EQ expr #variableAssign
+    | (CONST | LET | VAR)? ID         #variableDeclare
     ;
