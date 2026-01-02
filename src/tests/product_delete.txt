@@ -1,21 +1,22 @@
-from flask import Flask, render_template_string, request
+from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
-// this file for delete product
-
-products = [
-    {"name": "Laptop", "description": "Powerful gaming laptop", "price": 1200},
-    {"name": "Phone", "description": "Smartphone with great camera", "price": 800},
-    {"name": "Keyboard", "description": "Mechanical keyboard", "price": 150}
-]
+product = {
+           "name": "Laptop",
+           "price": 3500,
+           "category": "sdgasdgasd",
+           "quantity": 5,
+    "description":"Powerful gaming laptop",
+    "image": "https://via.placeholder.com/300"
+}
 
 html_template = """
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Products</title>
+    <title> Details of Product</title>
 
     <style>
         body {
@@ -24,82 +25,62 @@ html_template = """
         }
 
         .container {
-            width: 50%;
+            width: 60%;
             margin: 40px auto;
             background: white;
-            padding: 25px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 30px;
+        }
+
+        .image-box img {
+            width: 300px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
+        .details h2 {
+            margin-top: 0;
         }
 
-        .product {
-            background: #e9ecef;
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 6px;
-        }
-
-        .product h3 {
-            margin: 0;
+        .details p {
+            margin: 8px 0;
+            font-size: 16px;
         }
 
         .price {
-            color: #007bff;
+            color: #28a745;
+            font-size: 20px;
             font-weight: bold;
-        }
-
-        .delete-btn {
-            margin-top: 10px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .delete-btn:hover {
-            background-color: #b02a37;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h2>Product List</h2>
 
-        {% if products %}
-            {% for product in products %}
-            <div class="product">
-                <h3>{{ product.name }}</h3>
-                <p>{{ product.description }}</p>
-                <p class="price">Price: ${{ product.price }}</p>
+        <div class="image-box">
+            <img src="{{ product.image }}" alt="Product Image">
+        </div>
 
-                <form method="post">
-                    <input type="hidden" name="delete" value="{{ product.name }}">
-                    <button class="delete-btn" type="submit">Delete</button>
-                </form>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p style="text-align:center;">No products available</p>
-        {% endif %}
+        <div class="details">
+            <h2>{{ product.name }}</h2>
+            <p class="price">Price: {{ product.price }} $</p>
+            <p><strong>Category:</strong> {{ product.category }}</p>
+            <p><strong> Quantity:</strong> {{ product.quantity }}</p>
+            <p><strong>Description:</strong> {{ product.description }}</p>
+        </div>
+
     </div>
 </body>
 </html>
 """
 
 @app.route("/", methods=["GET", "POST"])
-def products_page():
-    if request.method == "POST":
-        name_to_delete = request.form.get("delete")
-        products[:] = [p for p in products if p["name"] != name_to_delete]
+def product_details():
+    return render_template_string(html_template, product=product)
 
-    return render_template_string(html_template, products=products)
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)

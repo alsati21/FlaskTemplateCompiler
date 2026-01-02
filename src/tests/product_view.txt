@@ -1,49 +1,38 @@
 from flask import Flask, render_template_string
 
 app = Flask(__name__)
-// this file for show product
 
-<<<<<<< Updated upstream
-product = {
-    "name": "حاسوب محمول",
-    "price": 3500,
-    "category": "إلكترونيات",
-    "quantity": 5
-}
-=======
-products = [
-    {
-        "name": "Laptop",
-        "price": 3500,
-        "category": "sdgasdgasd",
-        "quantity": 5,
-        "image": "https://via.placeholder.com/250"
-    },
-    {
-        "name": "Phone",
-        "price": 1800,
-        "category": "asdgasdgas",
-        "quantity": 10,
-        "image": "https://via.placeholder.com/250"
-    },
-    {
-        "name": "Keyboard",
-        "price": 300,
-        "category": "asdgasdgas",
-        "quantity": 20,
-        "image": "https://via.placeholder.com/250"
-    }
-]
->>>>>>> Stashed changes
-
+products =   [
+               {
+                   "name": "Laptop",
+                   "price": 3500,
+                   "category": "sdgasdgasd",
+                   "quantity": 5,
+                   "description": "Powerful gaming laptop",
+                   "image": "https://akhbaralaan.net/wp-content/uploads/2020/02/working-on-laptop_HYezpaW0Si.jpg"
+               },
+               {
+                   "name": "Phone",
+                   "price": 1800,
+                   "category": "asdgasdgas",
+                   "quantity": 10,
+                   "description": "Smartphone with great camera",
+                   "image": "https://akhbaralaan.net/wp-content/uploads/2020/02/working-on-laptop_HYezpaW0Si.jpg"
+               },
+               {
+                   "name": "Keyboard",
+                   "price": 300,
+                   "category": "asdgasdgas",
+                   "quantity": 20,
+                   "description": "Mechanical keyboard",
+                   "image": "https://akhbaralaan.net/wp-content/uploads/2020/02/working-on-laptop_HYezpaW0Si.jpg"
+               }
+           ]
 html_template = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-<<<<<<< Updated upstream
-    <title>عرض منتج</title>
-=======
     <title>show products</title>
 
     <style>
@@ -88,18 +77,9 @@ html_template = """
             font-weight: bold;
         }
     </style>
->>>>>>> Stashed changes
 </head>
+
 <body>
-<<<<<<< Updated upstream
-    <h2>عرض منتج</h2>
-    <table border="1">
-        <tr><th>الاسم</th><td>{{ product.name }}</td></tr>
-        <tr><th>السعر</th><td>{{ product.price }}</td></tr>
-        <tr><th>الفئة</th><td>{{ product.category }}</td></tr>
-        <tr><th>الكمية</th><td>{{ product.quantity }}</td></tr>
-    </table>
-=======
     <div class="container">
         <h2> list of product</h2>
 
@@ -112,17 +92,18 @@ html_template = """
                 <p><span class="label">Price:</span> {{ product.price }}$</p>
                 <p><span class="label">Category:</span> {{ product.category }}</p>
                 <p><span class="label">Quantity:</span> {{ product.quantity }}</p>
+                 <p><span class="label">Description:</span> {{ product.description }}</p>
             </div>
         </div>
         {% endfor %}
     </div>
->>>>>>> Stashed changes
 </body>
 </html>
 """
 
-@app.route("/")
-def view_product():
-    return render_template_string(html_template, product=product)
+@app.route("/", methods=["GET", "POST"])
+def view_products():
+    return render_template_string(html_template, products=products)
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)

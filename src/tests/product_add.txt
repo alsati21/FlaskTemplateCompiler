@@ -1,0 +1,135 @@
+from flask import Flask, render_template_string, request
+
+app = Flask(__name__)
+products = [
+    {
+        "name": "Laptop",
+        "price": 3500,
+        "category": "Electronics",
+        "quantity": 5,
+        "image": "https://akhbaralaan.net/wp-content/uploads/2020/02/working-on-laptop_HYezpaW0Si.jpg"
+    }
+]
+
+html_template = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products App</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            width: 50%;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+
+        button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .product-box {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+
+        img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h2>Add New Product</h2>
+
+    <form method="post">
+        <label>Product Name</label>
+        <input type="text" name="name" required>
+
+        <label>Price</label>
+        <input type="number" name="price" required>
+
+        <label>Category</label>
+        <input type="text" name="category" required>
+
+        <label>Quantity</label>
+        <input type="number" name="quantity" required>
+
+        <label>Image URL</label>
+        <input type="text" name="image" placeholder="https://example.com/image.jpg" required>
+
+        <button type="submit">Add Product</button>
+    </form>
+
+    {% for product in products %}
+    <div class="product-box">
+        <img src="{{ product.image }}">
+        <p><strong>Name:</strong> {{ product.name }}</p>
+        <p><strong>Price:</strong> {{ product.price }}</p>
+        <p><strong>Category:</strong> {{ product.category }}</p>
+        <p><strong>Quantity:</strong> {{ product.quantity }}</p>
+    </div>
+    {% endfor %}
+
+</div>
+</body>
+</html>
+"""
+
+@app.route("/", methods=["GET", "POST"])
+def add_product():
+    if request.method == "POST":
+        new_product = {
+            "name": request.form["name"],
+            "price": int(request.form["price"]),
+            "category": request.form["category"],
+            "quantity": int(request.form["quantity"]),
+            "image": request.form["image"]
+        }
+
+        products.append(new_product)
+
+    return render_template_string(html_template, products=products)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
