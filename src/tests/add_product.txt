@@ -9,116 +9,42 @@ this file for add products
 with flask and html and css
 */
 
+
+
+
+
 products = []
 
-html_template = """
+form_template = """
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Products App</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-        }
-
-        .container {
-            width: 45%;
-            margin: 30px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-        }
-
-        button {
-            margin-top: 15px;
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .product-box {
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-        }
-
-        .product-box p {
-            margin: 5px 0;
-        }
-    </style>
+    <title>إضافة منتج</title>
 </head>
-
 <body>
-    <div class="container">
+    <h2>إضافة منتج جديد</h2>
+    <form method="post">
+        <label>اسم المنتج:</label>
+        <input type="text" name="name" required><br>
 
-        <h2>Add New Product</h2>
+        <label>السعر:</label>
+        <input type="number" name="price" required><br>
 
-        <form method="post">
-            <label>Product Name</label>
-            <input type="text" name="name" required>
+        <label>الفئة:</label>
+        <input type="text" name="category" required><br>
 
-            <label>Price</label>
-            <input type="number" name="price" required>
+        <label>الكمية:</label>
+        <input type="number" name="quantity" required><br>
 
-            <label>Category</label>
-            <input type="text" name="category" required>
-
-            <label>Quantity</label>
-            <input type="number" name="quantity" required>
-
-            <button type="submit">Add Product</button>
-        </form>
-
-        {% if products %}
-            <h2>Products List</h2>
-
-            {% for product in products %}
-            <div class="product-box">
-                <p><strong>Name:</strong> {{ product.name }}</p>
-                <p><strong>Price:</strong> {{ product.price }}</p>
-                <p><strong>Category:</strong> {{ product.category }}</p>
-                <p><strong>Quantity:</strong> {{ product.quantity }}</p>
-            </div>
-            {% endfor %}
-        {% endif %}
-
-    </div>
+        <button type="submit">إضافة</button>
+    </form>
 </body>
 </html>
 """
 
 @app.route("/", methods=["GET", "POST"])
-def add_product():
+def add():
     if request.method == "POST":
         new_product = {
             "name": request.form["name"],
@@ -127,9 +53,6 @@ def add_product():
             "quantity": int(request.form["quantity"])
         }
         products.append(new_product)
+    return render_template_string(form_template)
 
-    return render_template_string(html_template, products=products)
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+app.run(debug=True)

@@ -3,6 +3,14 @@ from flask import Flask, render_template_string
 app = Flask(__name__)
 // this file for show product
 
+<<<<<<< Updated upstream
+product = {
+    "name": "حاسوب محمول",
+    "price": 3500,
+    "category": "إلكترونيات",
+    "quantity": 5
+}
+=======
 products = [
     {
         "name": "Laptop",
@@ -26,12 +34,16 @@ products = [
         "image": "https://via.placeholder.com/250"
     }
 ]
+>>>>>>> Stashed changes
 
 html_template = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+<<<<<<< Updated upstream
+    <title>عرض منتج</title>
+=======
     <title>show products</title>
 
     <style>
@@ -76,9 +88,18 @@ html_template = """
             font-weight: bold;
         }
     </style>
+>>>>>>> Stashed changes
 </head>
-
 <body>
+<<<<<<< Updated upstream
+    <h2>عرض منتج</h2>
+    <table border="1">
+        <tr><th>الاسم</th><td>{{ product.name }}</td></tr>
+        <tr><th>السعر</th><td>{{ product.price }}</td></tr>
+        <tr><th>الفئة</th><td>{{ product.category }}</td></tr>
+        <tr><th>الكمية</th><td>{{ product.quantity }}</td></tr>
+    </table>
+=======
     <div class="container">
         <h2> list of product</h2>
 
@@ -95,13 +116,13 @@ html_template = """
         </div>
         {% endfor %}
     </div>
+>>>>>>> Stashed changes
 </body>
 </html>
 """
 
-@app.route("/", methods=["GET", "POST"])
-def view_products():
-    return render_template_string(html_template, products=products)
+@app.route("/")
+def view_product():
+    return render_template_string(html_template, product=product)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+app.run(debug=True)

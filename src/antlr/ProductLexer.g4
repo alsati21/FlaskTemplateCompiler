@@ -112,3 +112,8 @@ IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEWLINE : '\r'? '\n' ;
 
 
+fragment ESC: '\\' [btnfr"'\\`];
+
+mode HTML_TEXT_MODE ;
+HTML_WS: [ \t\r\n]+ -> skip;
+HTML_TEXT : (ESC | ~[<>(){}])+;
